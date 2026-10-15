@@ -1,9 +1,16 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Egghead-Venture",
   description: "Chain related terms from your own course module to defeat enemies.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#58bdf0",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
