@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+@theme {
+  --color-sky-1: #58bdf0;
+  --color-sky-2: #bfeaff;
+  --color-wood-1: #b06a2c;
+  --color-wood-2: #8a4f1e;
+  --color-wood-dark: #5e3210;
+  --color-wood-edge: #d9a15c;
+  --color-parch: #fbefc9;
+  --color-parch-2: #f1d9a0;
+  --color-brown: #4a2c0e;
+  --color-tile-1: #fff6d6;
+  --color-tile-2: #f3d98f;
+  --color-tile-edge: #9b6420;
+  --color-gold: #ffc935;
+  --color-red: #e8453c;
+
+  --font-display: "Lilita One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Fredoka", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
