@@ -1,5 +1,7 @@
 "use client";
 
+import UploadPanel from "@/components/upload-panel";
+
 export default function Home() {
-  return <></>;
+  return <UploadPanel onStart={() => {}} artId="" onArt={() => {}} />;
 }

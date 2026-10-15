@@ -24,3 +24,141 @@
 * {
   box-sizing: border-box;
 }
+
+.game {
+  padding: 16px 10px 40px;
+}
+.frame {
+  max-width: 980px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 22px;
+  border: 10px solid var(--color-wood-2);
+  background: var(--color-wood-2);
+  box-shadow: 0 0 0 3px var(--color-wood-dark);
+  inset:
+    0 0 0 3px var(--color-wood-edge),
+    0 16px 0 -2px rgba(0, 0, 0, 0.18);
+}
+
+.scene {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 360px;
+  background: linear-gradient(var(--color-sky-1), #bfeaff 78%);
+  border-block: 4px solid var(--color-wood-dark);
+}
+.scene.tall {
+  min-height: 330px;
+}
+.scene-content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-height: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.sun {
+  position: absolute;
+  top: 24px;
+  left: 9%;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffbc2 0 45%, #ffd84a 46%);
+  box-shadow:
+    0 0 0 10px rgba(255, 236, 120, 0.35),
+    0 0 0 22px rgba(255, 236, 120, 0.18);
+}
+.cloud {
+  position: absolute;
+  width: 110px;
+  height: 34px;
+  border-radius: 40px;
+  background: #fff;
+  animation: drift 80s linear infinite;
+}
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+}
+.cloud::before {
+  width: 50px;
+  height: 50px;
+  top: -24px;
+  left: 18px;
+}
+.cloud::after {
+  width: 38px;
+  height: 38px;
+  top: -14px;
+  left: 56px;
+}
+.c1 {
+  top: 60px;
+  left: -140px;
+}
+.c2 {
+  top: 112px;
+  left: -140px;
+  scale: 0.7;
+  animation-duration: 105s;
+  animation-delay: -45s;
+}
+.c3 {
+  top: 36px;
+  left: -140px;
+  scale: 0.85;
+  animation-duration: 120s;
+  animation-delay: -85s;
+}
+@keyframes drift {
+  to {
+    transform: translateX(1300px);
+  }
+}
+
+.hills {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cover-hero {
+  flex: 1;
+  display: grid;
+  place-content: start center;
+  justify-items: center;
+  gap: 12px;
+  padding: 52px 16px 0;
+  text-align: center;
+}
+
+.logo-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 9vw, 4.6rem);
+  line-height: 1;
+  color: #ffd84a;
+  -webkit-text-stroke: 10px #6b3410;
+  paint-order: stroke fill;
+  text-shadow: 0 8px 0 #6b3410;
+  transform: rotate(-2deg);
+}
+.tagline {
+  max-width: 50ch;
+  padding: 4px 14px;
+  font-weight: 500;
+  background: rgba(251, 239, 201, 0.92);
+  border: 3px solid var(--color-wood-2);
+  border-radius: 12px;
+  margin-top: 15px;
+}
