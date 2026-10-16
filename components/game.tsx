@@ -1,4 +1,4 @@
-import { newGame } from "@/lib/engine";
+import { ATTACK_EVERY, newGame } from "@/lib/engine";
 import { ArtSet, GameState, Module } from "@/lib/types";
 import { useEffect, useRef, useState } from "react";
 import Sprite from "./sprite";
@@ -21,12 +21,21 @@ export default function Game({ mod, art, onExit }: Props) {
   const [shownIdx, setShownIdx] = useState(0);
   const fightRef = useRef<HTMLDivElement>(null);
 
+  const targetIdx = state.defeated && state.phase !== "won" ? state.enemyIdx - 1 : state.enemyIdx;
+  const swapping = shownIdx !== state.enemyIdx;
+  const enemyShownHp = swapping ? 0 : state.enemyHp;
+  const fxOnEnemy = shownIdx === targetIdx && state.turn > 0;
+
   const attacked = state.event !== "none";
+  const hit = state.event === "hit" && state.feedback.kind === "hit" && fxOnEnemy ? state.feedback : null;
   const enemyAt = attacked ? ENEMY_AT : ENEMY_AT_QUICK;
 
-  const targetIdx = state.defeated && state.phase !== "won" ? state.enemyIdx - 1 : state.enemyIdx;
-  const fxOnEnemy = shownIdx === targetIdx && state.turn > 0;
-  const hit = state.event === "hit" && state.feedback.kind === "hit" && fxOnEnemy ? state.feedback : null;
+  const shownEnemy = state.enemies[shownIdx];
+  const enemyDead = enemyShownHp === 0;
+  const enemyActs = state.struck && !swapping;
+  const enemyHpShown = useLagged(enemyShownHp, hit ? HIT_AT : 0);
+  const enemyDefeatedUi = enemyHpShown === 0;
+
   const playerDead = state.phase === "lost";
   const playerDelayMs = state.struck ? enemyAt + HIT_AT : hit && hit.healed > 0 ? HIT_AT : 0;
   const playerHpShown = useLagged(state.playerHp, playerDelayMs);
@@ -98,6 +107,52 @@ export default function Game({ mod, art, onExit }: Props) {
                 <Meter value={playerHpShown} max={state.playerMaxHp} tone="good" label="Your health" />
               </div>
             </div>
+
+            <div className="side">
+              <div className="actor">
+                <div className="enter" key={`en ${shownIdx}`}>
+                  <div key={`em ${state.turn}`} className={`mover ${enemyActs ? "atk-e" : ""}`}>
+                    <div className={`sprite enemy ${enemyDead ? "is-dead" : hit ? " is-hit" : ""}`} aria-hidden="true">
+                      <Sprite art={shownEnemy.art} />
+                    </div>
+                  </div>
+                </div>
+                <div className="shadow" />
+                {hit && (
+                  <>
+                    <span key={`d${state.turn}`} className="float float-dmg">
+                      -{hit.damage}
+                      {hit.weak && <small>Weakness!</small>}
+                    </span>
+                    <span key={`i${state.turn}`} className={`impact ${hit.weak ? "big" : ""}`} aria-hidden="true" />
+                  </>
+                )}
+                {state.event === "miss" && fxOnEnemy && (
+                  <span key={`m${state.turn}`} className="float float-miss">
+                    Blocked!
+                  </span>
+                )}
+              </div>
+              <div className="plaque">
+                <h2>{shownEnemy.name}</h2>
+                <Meter value={enemyHpShown} max={shownEnemy.maxHp} tone="bad" label={`${shownEnemy.name} health`} />
+                <p className="flag">Weak to {shownEnemy.weakness}</p>
+                {enemyDefeatedUi ? (
+                  <p className="strike">Defeated!</p>
+                ) : (
+                  <p className="strike" aria-label={`Strikes in ${state.charge} actions for ${shownEnemy.damage}`}>
+                    {Array.from({ length: ATTACK_EVERY }).map((_, i) => (
+                      <span key={i} className={`pip${i < ATTACK_EVERY - state.charge ? " on" : ""}`} aria-hidden="true">
+                        ⚔️
+                      </span>
+                    ))}
+                    <span>
+                      Strikes in {state.charge} for {shownEnemy.damage}
+                    </span>
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         </Scene>
       </div>
@@ -128,7 +183,6 @@ function Meter({ value, max, tone, label }: { value: number; max: number; tone: 
   );
 }
 
-// Returns `value` after `delayMs`, so health bars and numbers change when the blow lands.
 function useLagged<T>(value: T, delayMs: number): T {
   const [v, setV] = useState(value);
   useEffect(() => {
