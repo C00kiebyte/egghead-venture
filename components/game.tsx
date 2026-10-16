@@ -10,7 +10,7 @@ import {
   toggleTile,
   undoLast,
 } from "@/lib/engine";
-import { ArtSet, GameState, Module, Tile } from "@/lib/types";
+import { ArtSet, Feedback, GameState, Module, Tile } from "@/lib/types";
 import { useEffect, useRef, useState } from "react";
 import Sprite from "./sprite";
 import Scene from "./scene";
@@ -465,8 +465,34 @@ export default function Game({ mod, art, onExit }: Props) {
               </div>
             )}
           </section>
+
+          <aside className="book" aria-live="polite" aria-label="Spellbook">
+            <h2>Spellbook</h2>
+            <SpellbookBody feedback={state.feedback} notice={state.notice} />
+          </aside>
         </div>
       </div>
+
+      {sheetOpen && (
+        <div className="sheet-wrap">
+          <button
+            type="button"
+            className="sheet-backdrop"
+            aria-label="Close spellbook"
+            tabIndex={-1}
+            onClick={() => setSheetOpen(false)}
+          />
+          <div className="sheet" role="dialog" aria-modal="true" aria-label="Spellbook">
+            <div className="sheet-head">
+              <h2>Spellbook</h2>
+              <button type="button" ref={closeRef} className="btn small" onClick={() => setSheetOpen(false)}>
+                Close
+              </button>
+            </div>
+            <SpellbookBody feedback={state.feedback} notice={state.notice} />
+          </div>
+        </div>
+      )}
     </main>
   );
 }
@@ -512,4 +538,46 @@ function tileFont(word: string): string {
   let rem = longest <= 5 ? 1.15 : longest <= 7 ? 1 : longest <= 9 ? 0.88 : longest <= 11 ? 0.76 : 0.66;
   if (word.length > 14) rem = Math.min(rem, 0.8);
   return `${rem}rem`;
+}
+
+function SpellbookBody({ feedback, notice }: { feedback: Feedback; notice: string }) {
+  return (
+    <>
+      {feedback.kind === "info" && <p>{feedback.text}</p>}
+
+      {feedback.kind === "hit" && (
+        <>
+          <h3>
+            {feedback.topic}: {feedback.damage} damage
+            {feedback.weak ? ", weakness hit!" : ""}
+            {feedback.healed > 0 ? ` Healed ${feedback.healed}.` : ""}
+          </h3>
+          <dl className="entries">
+            {feedback.terms.map((t) => (
+              <div key={t.word}>
+                <dt>{t.word}</dt>
+                <dd>{t.definition || "No definition provided."}</dd>
+              </div>
+            ))}
+          </dl>
+        </>
+      )}
+
+      {feedback.kind === "miss" && (
+        <>
+          <h3>Those terms don&apos;t share a concept</h3>
+          <dl className="entries">
+            {feedback.rows.map((r) => (
+              <div key={r.word}>
+                <dt>{r.word}</dt>
+                <dd>{r.topics.join(", ")}</dd>
+              </div>
+            ))}
+          </dl>
+        </>
+      )}
+
+      {notice && <p className="notice">{notice}</p>}
+    </>
+  );
 }
