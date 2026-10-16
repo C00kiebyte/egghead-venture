@@ -41,6 +41,7 @@
     0 16px 0 -2px rgba(0, 0, 0, 0.18);
 }
 
+/* === Cover === */
 .scene {
   position: relative;
   overflow: hidden;
@@ -119,11 +120,6 @@
   animation-duration: 120s;
   animation-delay: -85s;
 }
-@keyframes drift {
-  to {
-    transform: translateX(1300px);
-  }
-}
 
 .hills {
   position: absolute;
@@ -156,9 +152,60 @@
 .tagline {
   max-width: 50ch;
   padding: 4px 14px;
-  font-weight: 500;
+  font-weight: 600;
   background: rgba(251, 239, 201, 0.92);
   border: 3px solid var(--color-wood-2);
   border-radius: 12px;
   margin-top: 15px;
+}
+
+.parade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  display: flex;
+  justify-content: center;
+  gap: clamp(10px, 4vw, 40px);
+  font-size: clamp(44px, 10vw, 72px);
+  line-height: 1;
+}
+.parade span {
+  animation: bob 2.4s ease-in-out infinite;
+}
+.parade span:nth-child(2) {
+  animation-delay: -0.5s;
+}
+.parade span:nth-child(3) {
+  animation-delay: -1s;
+}
+.parade span:nth-child(4) {
+  animation-delay: -1.5s;
+}
+/* === Cover END === */
+
+/* === Sprites === */
+.sprite-emoji {
+  position: relative;
+  display: block;
+}
+.sprite-accessory {
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  translate: -50% 0;
+  font-size: 0.55em;
+}
+/* === Sprites END === */
+
+@keyframes bob {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes drift {
+  to {
+    transform: translateX(1300px);
+  }
 }

@@ -3,14 +3,16 @@ import { SAMPLE_CS } from "@/lib/sample";
 import Module from "module";
 import { useMemo, useState } from "react";
 import Scene from "./scene";
+import { ArtSet } from "@/lib/types";
+import Sprite from "./sprite";
 
 interface Props {
   onStart: (m: Module) => void;
-  artId: string;
+  art: ArtSet;
   onArt: (id: string) => void;
 }
 
-export default function UploadPanel({ onStart, artId, onArt }: Props) {
+export default function UploadPanel({ onStart, art, onArt }: Props) {
   const [moduleContent, setModuleContent] = useState(SAMPLE_CS);
   const gameTerms = useMemo(() => parseModule(moduleContent), [moduleContent]);
 
@@ -21,6 +23,14 @@ export default function UploadPanel({ onStart, artId, onArt }: Props) {
           <div className="cover-hero">
             <div className="logo-title">Egghead Venture!</div>
             <p className="tagline">Turn your course keywords into spell tiles and chain them to defeat enemies.</p>
+
+            <div className="parade" aria-hidden>
+              {[art.hero, ...art.enemies.slice(0, 3)].map((c) => (
+                <span key={c.name}>
+                  <Sprite art={c.art} />
+                </span>
+              ))}
+            </div>
           </div>
         </Scene>
       </div>
