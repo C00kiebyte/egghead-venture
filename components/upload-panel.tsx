@@ -1,7 +1,7 @@
 import { parseModule } from "@/lib/parse";
-import { SAMPLE_CS } from "@/lib/sample";
+import { SAMPLE_APP_DEV, SAMPLE_AUTOMATA, SAMPLE_CS, SAMPLE_CYBERSEC } from "@/lib/sample";
 import Module from "module";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Scene from "./scene";
 import { ArtSet } from "@/lib/types";
 import Sprite from "./sprite";
@@ -13,8 +13,29 @@ interface Props {
 }
 
 export default function UploadPanel({ onStart, art, onArt }: Props) {
+  const [selectedModule, setSelectedModule] = useState("computer science");
   const [moduleContent, setModuleContent] = useState(SAMPLE_CS);
   const gameTerms = useMemo(() => parseModule(moduleContent), [moduleContent]);
+
+  const onModuleSelect = (val: string) => {
+    setSelectedModule(val);
+  };
+
+  useEffect(() => {
+    switch (selectedModule) {
+      case "application development":
+        setModuleContent(SAMPLE_APP_DEV);
+        break;
+      case "cybersecurity":
+        setModuleContent(SAMPLE_CYBERSEC);
+        break;
+      case "automata":
+        setModuleContent(SAMPLE_AUTOMATA);
+        break;
+      default:
+        setModuleContent(SAMPLE_CS);
+    }
+  }, [selectedModule]);
 
   return (
     <main className="game">
@@ -42,6 +63,39 @@ export default function UploadPanel({ onStart, art, onArt }: Props) {
               <li>Every enemy is weak to one concept. Matching it deals double damage.</li>
               <li>A wrong chain costs an action, then shows where each term belongs.</li>
             </ol>
+          </section>
+
+          <section className="scroll upload" aria-label="Module Content">
+            <div className="upload-head">
+              <h2>Your Module</h2>
+            </div>
+            <textarea id="module-text" value={moduleContent} spellCheck={false} />
+            <div className="modules">
+              <button
+                className={selectedModule === "computer science" ? "selected" : ""}
+                onClick={() => onModuleSelect("computer science")}
+              >
+                Computer Science Basics
+              </button>
+              <button
+                className={selectedModule === "application development" ? "selected" : ""}
+                onClick={() => onModuleSelect("application development")}
+              >
+                Application Development
+              </button>
+              <button
+                className={selectedModule === "cybersecurity" ? "selected" : ""}
+                onClick={() => onModuleSelect("cybersecurity")}
+              >
+                Cybersecurity
+              </button>
+              <button
+                className={selectedModule === "automata" ? "selected" : ""}
+                onClick={() => onModuleSelect("automata")}
+              >
+                Theory of Computations with Automata
+              </button>
+            </div>
           </section>
         </div>
       </div>

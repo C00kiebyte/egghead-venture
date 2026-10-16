@@ -30,6 +30,7 @@
   background: #fffaf0;
   border: 3px solid var(--tile-edge);
   border-radius: 10px;
+  text-wrap-mode: nowrap;
 }
 .format-hint {
   font-size: 0.88rem;

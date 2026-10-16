@@ -65,6 +65,12 @@ code {
   -webkit-touch-callout: none;
 }
 
+.modules {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 @media (max-width: 879px), (max-height: 599px) {
   body {
     overscroll-behavior: none;
