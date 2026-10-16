@@ -14,7 +14,7 @@ import { ArtSet, Feedback, GameState, Module, Tile } from "@/lib/types";
 import { useEffect, useRef, useState } from "react";
 import Sprite from "./sprite";
 import Scene from "./scene";
-import { sfx } from "@/lib/sfx";
+import { setMuted, sfx } from "@/lib/sfx";
 
 interface Props {
   mod: Module;
@@ -204,6 +204,8 @@ export default function Game({ mod, art, onExit }: Props) {
     const el = chipsRef.current;
     if (el) el.scrollLeft = el.scrollWidth;
   }, [state.selected.length]);
+
+  useEffect(() => setMuted(muted), [muted]);
 
   return (
     <main className="game">
