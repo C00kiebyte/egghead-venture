@@ -85,3 +85,14 @@ export function newGame(mod: Module, roster: Character[]): GameState {
     defeated: false,
   };
 }
+
+export function toggleTile(s: GameState, id: string): GameState {
+  if (s.phase !== "play") return s;
+  const selected = s.selected.includes(id) ? s.selected.filter((x) => x !== id) : [...s.selected, id];
+  return { ...s, selected };
+}
+
+export function tileValue(word: string): number {
+  const len = word.replace(/\s/g, "").length;
+  return len <= 4 ? 1 : len <= 7 ? 2 : len <= 10 ? 3 : 4;
+}

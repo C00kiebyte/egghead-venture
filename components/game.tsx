@@ -1,8 +1,9 @@
-import { ATTACK_EVERY, newGame } from "@/lib/engine";
+import { ATTACK_EVERY, newGame, tileValue, toggleTile } from "@/lib/engine";
 import { ArtSet, GameState, Module } from "@/lib/types";
 import { useEffect, useRef, useState } from "react";
 import Sprite from "./sprite";
 import Scene from "./scene";
+import { sfx } from "@/lib/sfx";
 
 interface Props {
   mod: Module;
@@ -19,16 +20,22 @@ export default function Game({ mod, art, onExit }: Props) {
   const [state, setState] = useState<GameState>(newGame(mod, art.enemies));
   const [muted, setMutedState] = useState(false);
   const [shownIdx, setShownIdx] = useState(0);
+  const [resultReady, setResultReady] = useState(false);
+
   const fightRef = useRef<HTMLDivElement>(null);
+  const chipsRef = useRef<HTMLDivElement>(null);
 
   const targetIdx = state.defeated && state.phase !== "won" ? state.enemyIdx - 1 : state.enemyIdx;
   const swapping = shownIdx !== state.enemyIdx;
   const enemyShownHp = swapping ? 0 : state.enemyHp;
   const fxOnEnemy = shownIdx === targetIdx && state.turn > 0;
 
+  const showResult = state.phase !== "play" && resultReady;
   const attacked = state.event !== "none";
   const hit = state.event === "hit" && state.feedback.kind === "hit" && fxOnEnemy ? state.feedback : null;
   const enemyAt = attacked ? ENEMY_AT : ENEMY_AT_QUICK;
+  const selectedTiles = state.selected.map((id) => state.board.find((t) => t.id === id)!).filter(Boolean);
+  const dmg = selectedTiles.reduce((n, t) => n + tileValue(t.term.word), 0);
 
   const shownEnemy = state.enemies[shownIdx];
   const enemyDead = enemyShownHp === 0;
@@ -39,6 +46,14 @@ export default function Game({ mod, art, onExit }: Props) {
   const playerDead = state.phase === "lost";
   const playerDelayMs = state.struck ? enemyAt + HIT_AT : hit && hit.healed > 0 ? HIT_AT : 0;
   const playerHpShown = useLagged(state.playerHp, playerDelayMs);
+
+  function pick(id: string, e?: React.MouseEvent<HTMLButtonElement>) {
+    if (state.selected.includes(id)) sfx.drop();
+    else sfx.pick(state.selected.length);
+    setState((p) => toggleTile(p, id));
+
+    if (e && e.detail > 0) e.currentTarget.blur();
+  }
 
   return (
     <main className="game">
@@ -74,6 +89,7 @@ export default function Game({ mod, art, onExit }: Props) {
             {hit?.weak && <span key={`f${state.turn}`} className="flash" aria-hidden="true" />}
             {state.struck && <span key={`fh${state.turn}`} className="flash hurt" aria-hidden="true" />}
 
+            {/* PLAYER */}
             <div className="side">
               <div className="actor">
                 <div
@@ -108,6 +124,7 @@ export default function Game({ mod, art, onExit }: Props) {
               </div>
             </div>
 
+            {/* ENEMY */}
             <div className="side">
               <div className="actor">
                 <div className="enter" key={`en ${shownIdx}`}>
@@ -155,6 +172,39 @@ export default function Game({ mod, art, onExit }: Props) {
             </div>
           </div>
         </Scene>
+
+        <div className="lower wood">
+          <section className="play">
+            {!showResult ? (
+              <>
+                <div className="wordbar">
+                  <div className="wordtray" aria-label="Current chain">
+                    <div className="chips-row" ref={chipsRef}>
+                      {selectedTiles.length === 0 ? (
+                        <span className="tray-empty">Tap related terms</span>
+                      ) : (
+                        selectedTiles.map((t) => (
+                          <button
+                            type="button"
+                            className="mini"
+                            key={t.id}
+                            aria-label={`Remove ${t.term.word}`}
+                            onClick={() => pick(t.id)}
+                          >
+                            {t.term.word}
+                          </button>
+                        ))
+                      )}
+                    </div>
+                    {selectedTiles.length > 0 && <span className="gem-total">💥 {dmg}</span>}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
+          </section>
+        </div>
       </div>
     </main>
   );
