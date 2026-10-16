@@ -68,7 +68,7 @@ export default function UploadPanel({ onStart, art, onArt }: Props) {
             <div className="upload-head">
               <h2>Your Module</h2>
             </div>
-            <textarea id="module-text" value={moduleContent} spellCheck={false} />
+            <textarea id="module-text" value={moduleContent} spellCheck={false} readOnly />
             <div className="modules">
               <button
                 className={selectedModule === "computer science" ? "selected" : ""}
