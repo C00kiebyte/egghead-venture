@@ -47,6 +47,9 @@ export default function Game({ mod, art, onExit }: Props) {
   const busyRef = useRef(false);
   const actRef = useRef<(fn: (p: GameState) => GameState) => void>(() => {});
 
+  busyRef.current = busy;
+  turnRef.current = state.turn;
+
   const review = state.mod.terms.filter((t) => state.struggled.includes(t.word));
   const targetIdx = state.defeated && state.phase !== "won" ? state.enemyIdx - 1 : state.enemyIdx;
   const swapping = shownIdx !== state.enemyIdx;
@@ -59,7 +62,6 @@ export default function Game({ mod, art, onExit }: Props) {
   const hit = state.event === "hit" && state.feedback.kind === "hit" && fxOnEnemy ? state.feedback : null;
   const enemyAt = attacked ? ENEMY_AT : ENEMY_AT_QUICK;
   const selectedTiles: Tile[] = state.selected.map((id) => state.board.find((t) => t.id === id)!).filter(Boolean);
-  const dmg = selectedTiles.reduce((n, t) => n + tileValue(t.term.word), 0);
 
   const shownEnemy = state.enemies[shownIdx];
   const enemyDead = enemyShownHp === 0;
