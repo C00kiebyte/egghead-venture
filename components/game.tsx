@@ -47,6 +47,7 @@ export default function Game({ mod, art, onExit }: Props) {
   const busyRef = useRef(false);
   const actRef = useRef<(fn: (p: GameState) => GameState) => void>(() => {});
 
+  const review = state.mod.terms.filter((t) => state.struggled.includes(t.word));
   const targetIdx = state.defeated && state.phase !== "won" ? state.enemyIdx - 1 : state.enemyIdx;
   const swapping = shownIdx !== state.enemyIdx;
   const enemyShownHp = swapping ? 0 : state.enemyHp;
@@ -90,6 +91,14 @@ export default function Game({ mod, art, onExit }: Props) {
     el.style.setProperty("--dash", `${Math.round(Math.max(40, dash))}px`);
   }
 
+  function restart() {
+    setState(newGame(mod, art.enemies));
+    setShownIdx(0);
+    setResultReady(false);
+    setBusy(false);
+    setSeenTurn(0);
+  }
+
   function act(fn: (p: GameState) => GameState) {
     if (busyRef.current) return;
     measureDash();
@@ -97,6 +106,7 @@ export default function Game({ mod, art, onExit }: Props) {
   }
   actRef.current = act;
 
+  // Sound, haptics and input lock follow the animation timeline of each action.
   useEffect(() => {
     if (state.turn === 0) return;
     const timers: ReturnType<typeof setTimeout>[] = [];
@@ -130,6 +140,7 @@ export default function Game({ mod, art, onExit }: Props) {
     return () => timers.forEach(clearTimeout);
   }, [state.turn]);
 
+  // Bottom sheet: lock page scroll, move focus in and out, close on Escape.
   useEffect(() => {
     sheetOpenRef.current = sheetOpen;
     if (!sheetOpen) return;
@@ -147,12 +158,39 @@ export default function Game({ mod, art, onExit }: Props) {
     };
   }, [sheetOpen]);
 
+  // The sheet only exists on phones; close it if the window grows to the desktop layout.
+  useEffect(() => {
+    const mq = window.matchMedia(COMPACT);
+    const onChange = () => {
+      if (!mq.matches) setSheetOpen(false);
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  // Swap enemies
+  useEffect(() => {
+    if (state.enemyIdx === shownIdx) return;
+    const t = setTimeout(() => setShownIdx(state.enemyIdx), 1300);
+    return () => clearTimeout(t);
+  }, [state.enemyIdx, shownIdx]);
+
+  // Show end screen
+  useEffect(() => {
+    if (state.phase === "play") {
+      setResultReady(false);
+      return;
+    }
+    const t = setTimeout(() => setResultReady(true), state.phase === "won" ? 1700 : 2100);
+    return () => clearTimeout(t);
+  }, [state.phase]);
+
+  // Keyboard Event
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (sheetOpenRef.current) return;
       const tag = (e.target as HTMLElement).tagName;
       if (tag === "INPUT" || tag === "TEXTAREA") return;
-      // Enter on a focused button activates that button instead.
       if (e.key === "Enter" && tag !== "BUTTON") actRef.current(submitChain);
       else if (e.key === "Backspace") setState((p) => undoLast(p));
       else if (e.key === "Escape") setState((p) => clearSelection(p));
@@ -160,6 +198,12 @@ export default function Game({ mod, art, onExit }: Props) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  // Keep the newest word visible in the single-row chain tray on small screens.
+  useEffect(() => {
+    const el = chipsRef.current;
+    if (el) el.scrollLeft = el.scrollWidth;
+  }, [state.selected.length]);
 
   return (
     <main className="game">
@@ -383,9 +427,42 @@ export default function Game({ mod, art, onExit }: Props) {
                     {unread && <i className="dot" aria-hidden="true" />}
                   </button>
                 </div>
+                <p className="hint">Enter attacks · Backspace undoes · Esc clears · Shuffle uses one action</p>
               </>
             ) : (
-              <></>
+              <div className="scroll">
+                <h2>{state.phase === "won" ? "Victory!" : "Defeated!"}</h2>
+                <p>
+                  {state.phase === "won"
+                    ? `Every enemy is down. You used ${state.learned.length} of ${mod.terms.length} terms.`
+                    : `${state.enemies[state.enemyIdx].name} won this round. You used ${state.learned.length} of ${mod.terms.length} terms.`}
+                </p>
+                {review.length > 0 ? (
+                  <>
+                    <h3>Terms to review</h3>
+                    <dl className="entries">
+                      {review.map((t) => (
+                        <div key={t.word}>
+                          <dt>{t.word}</dt>
+                          <dd>
+                            {t.definition || "No definition provided."} <em>{t.topics.join(", ")}</em>
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </>
+                ) : (
+                  <p>No missed chains this run.</p>
+                )}
+                <div className="toolbar">
+                  <button type="button" className="btn attack" onClick={restart}>
+                    Play again
+                  </button>
+                  <button type="button" className="btn" onClick={onExit}>
+                    Change module
+                  </button>
+                </div>
+              </div>
             )}
           </section>
         </div>
