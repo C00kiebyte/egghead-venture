@@ -42,7 +42,7 @@
   border-radius: 8px;
   box-shadow: 0 2px 0 #2b1405;
 }
-.gem-total {
+.dmg-total {
   flex: none;
   font-family: var(--display);
   color: #fff3cf;

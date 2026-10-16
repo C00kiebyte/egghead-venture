@@ -1,5 +1,5 @@
-import { ATTACK_EVERY, newGame, tileValue, toggleTile } from "@/lib/engine";
-import { ArtSet, GameState, Module } from "@/lib/types";
+import { ATTACK_EVERY, calcDamage, newGame, sharedTopics, submitChain, tileValue, toggleTile } from "@/lib/engine";
+import { ArtSet, GameState, Module, Tile } from "@/lib/types";
 import { useEffect, useRef, useState } from "react";
 import Sprite from "./sprite";
 import Scene from "./scene";
@@ -21,9 +21,12 @@ export default function Game({ mod, art, onExit }: Props) {
   const [muted, setMutedState] = useState(false);
   const [shownIdx, setShownIdx] = useState(0);
   const [resultReady, setResultReady] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const fightRef = useRef<HTMLDivElement>(null);
   const chipsRef = useRef<HTMLDivElement>(null);
+  const busyRef = useRef(false);
+  const actRef = useRef<(fn: (p: GameState) => GameState) => void>(() => {});
 
   const targetIdx = state.defeated && state.phase !== "won" ? state.enemyIdx - 1 : state.enemyIdx;
   const swapping = shownIdx !== state.enemyIdx;
@@ -34,7 +37,7 @@ export default function Game({ mod, art, onExit }: Props) {
   const attacked = state.event !== "none";
   const hit = state.event === "hit" && state.feedback.kind === "hit" && fxOnEnemy ? state.feedback : null;
   const enemyAt = attacked ? ENEMY_AT : ENEMY_AT_QUICK;
-  const selectedTiles = state.selected.map((id) => state.board.find((t) => t.id === id)!).filter(Boolean);
+  const selectedTiles: Tile[] = state.selected.map((id) => state.board.find((t) => t.id === id)!).filter(Boolean);
   const dmg = selectedTiles.reduce((n, t) => n + tileValue(t.term.word), 0);
 
   const shownEnemy = state.enemies[shownIdx];
@@ -54,6 +57,25 @@ export default function Game({ mod, art, onExit }: Props) {
 
     if (e && e.detail > 0) e.currentTarget.blur();
   }
+
+  function measureDash() {
+    const el = fightRef.current;
+    if (!el) return;
+    const a = el.querySelector<HTMLElement>(".side:first-child .sprite");
+    const b = el.querySelector<HTMLElement>(".side:last-child .sprite");
+    if (!a || !b) return;
+    const ra = a.getBoundingClientRect();
+    const rb = b.getBoundingClientRect();
+    const dash = rb.left + rb.width / 2 - (ra.left + ra.width / 2) - ra.width * 0.75;
+    el.style.setProperty("--dash", `${Math.round(Math.max(40, dash))}px`);
+  }
+
+  function act(fn: (p: GameState) => GameState) {
+    if (busyRef.current) return;
+    measureDash();
+    setState(fn);
+  }
+  actRef.current = act;
 
   return (
     <main className="game">
@@ -196,8 +218,25 @@ export default function Game({ mod, art, onExit }: Props) {
                         ))
                       )}
                     </div>
-                    {selectedTiles.length > 0 && <span className="gem-total">💥 {dmg}</span>}
+                    {selectedTiles.length > 0 && (
+                      <span className="dmg-total">
+                        💥{" "}
+                        {calcDamage(
+                          selectedTiles,
+                          sharedTopics(selectedTiles).includes(state.enemies[state.enemyIdx].weakness),
+                        )}
+                      </span>
+                    )}
                   </div>
+
+                  <button
+                    type="button"
+                    className="btn attack"
+                    disabled={state.selected.length < 2 || busy || state.phase !== "play"}
+                    onClick={() => act(submitChain)}
+                  >
+                    Attack!
+                  </button>
                 </div>
               </>
             ) : (
