@@ -151,7 +151,7 @@ export default function Game({ mod, art, onExit }: Props) {
               <div className="actor">
                 <div className="enter" key={`en ${shownIdx}`}>
                   <div key={`em ${state.turn}`} className={`mover ${enemyActs ? "atk-e" : ""}`}>
-                    <div className={`sprite enemy ${enemyDead ? "is-dead" : hit ? " is-hit" : ""}`} aria-hidden="true">
+                    <div className={`sprite enemy ${enemyDead ? "is-dead" : hit ? "is-hit" : ""}`} aria-hidden="true">
                       <Sprite art={shownEnemy.art} />
                     </div>
                   </div>
@@ -228,7 +228,6 @@ export default function Game({ mod, art, onExit }: Props) {
                       </span>
                     )}
                   </div>
-
                   <button
                     type="button"
                     className="btn attack"
@@ -237,6 +236,30 @@ export default function Game({ mod, art, onExit }: Props) {
                   >
                     Attack!
                   </button>
+                </div>
+
+                <div className="board" role="group" aria-label="Term tiles">
+                  {state.board.map((t, i) => {
+                    const order = state.selected.indexOf(t.id);
+                    const on = order >= 0;
+                    const v = tileValue(t.term.word);
+                    return (
+                      <button
+                        key={t.id}
+                        type="button"
+                        className={`tile${on ? " on" : ""}`}
+                        style={{ "--i": i, "--fs": tileFont(t.term.word) } as React.CSSProperties}
+                        aria-pressed={on}
+                        onClick={(e) => pick(t.id, e)}
+                      >
+                        {on && <span className="order">{order + 1}</span>}
+                        <span className="word">{t.term.word}</span>
+                        <span className={`dmg v${v}`} title={`Worth ${v} dmg${v > 1 ? "s" : ""}`}>
+                          {v}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </>
             ) : (
@@ -283,4 +306,11 @@ function useLagged<T>(value: T, delayMs: number): T {
     return () => clearTimeout(t);
   }, [value, delayMs]);
   return v;
+}
+
+function tileFont(word: string): string {
+  const longest = Math.max(...word.split(" ").map((w) => w.length));
+  let rem = longest <= 5 ? 1.15 : longest <= 7 ? 1 : longest <= 9 ? 0.88 : longest <= 11 ? 0.76 : 0.66;
+  if (word.length > 14) rem = Math.min(rem, 0.8);
+  return `${rem}rem`;
 }
