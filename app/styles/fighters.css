@@ -26,10 +26,11 @@
   place-items: end center;
   height: 140px;
   width: 100%;
+  padding-bottom: 14px;
 }
 .shadow {
   position: absolute;
-  bottom: -10px;
+  bottom: 5px;
   width: 96px;
   height: 16px;
   border-radius: 50%;
