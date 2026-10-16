@@ -27,6 +27,8 @@ const HIT_AT = 260;
 const ENEMY_AT = 950;
 const ENEMY_AT_QUICK = 250;
 
+const COMPACT = "(max-width: 879px), (max-height: 599px)";
+
 export default function Game({ mod, art, onExit }: Props) {
   const [state, setState] = useState<GameState>(newGame(mod, art.enemies));
   const [muted, setMutedState] = useState(false);
@@ -94,6 +96,39 @@ export default function Game({ mod, art, onExit }: Props) {
     setState(fn);
   }
   actRef.current = act;
+
+  useEffect(() => {
+    if (state.turn === 0) return;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const at = (ms: number, fn: () => void) => timers.push(setTimeout(fn, ms));
+
+    const attacked = state.event !== "none";
+    const enemyAt = attacked ? ENEMY_AT : ENEMY_AT_QUICK;
+
+    if (attacked) sfx.whoosh(false);
+    if (state.event === "hit" && state.feedback.kind === "hit") {
+      const weak = state.feedback.weak;
+      at(HIT_AT, () => sfx.hit(weak));
+    } else if (state.event === "miss") at(HIT_AT, sfx.miss);
+    else sfx.shuffle();
+
+    if (state.struck) {
+      at(enemyAt, () => sfx.whoosh(true));
+      at(enemyAt + HIT_AT, sfx.hurt);
+    }
+
+    const end = state.struck ? enemyAt + 750 : state.defeated ? 1500 : attacked ? 800 : 300;
+    setBusy(true);
+    at(end, () => setBusy(false));
+
+    if (state.phase === "won") at(1500, sfx.win);
+    if (state.phase === "lost") at(enemyAt + 900, sfx.lose);
+
+    if (state.event === "miss" && state.phase === "play" && window.matchMedia(COMPACT).matches) {
+      at(end + 200, () => setSheetOpen(true));
+    }
+    return () => timers.forEach(clearTimeout);
+  }, [state.turn]);
 
   useEffect(() => {
     sheetOpenRef.current = sheetOpen;
