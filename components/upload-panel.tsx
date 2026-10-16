@@ -1,9 +1,8 @@
 import { parseModule } from "@/lib/parse";
 import { SAMPLE_APP_DEV, SAMPLE_AUTOMATA, SAMPLE_CS, SAMPLE_CYBERSEC } from "@/lib/sample";
-import Module from "module";
 import { useEffect, useMemo, useState } from "react";
 import Scene from "./scene";
-import { ArtSet } from "@/lib/types";
+import { ArtSet, Module } from "@/lib/types";
 import Sprite from "./sprite";
 
 interface Props {
@@ -107,14 +106,12 @@ export default function UploadPanel({ onStart, art, onArt }: Props) {
                 <span className="start-sep"> · </span>
                 {gameTerms.module.terms.length} terms · {gameTerms.module.topics.length} concepts
               </p>
-
               <ul className="chips">
                 {gameTerms.module.topics.map((t) => (
                   <li key={t}>{t}</li>
                 ))}
               </ul>
-
-              <button type="button" className="btn attack" onClick={() => {}}>
+              <button type="button" className="btn attack" onClick={() => onStart(gameTerms.module)}>
                 Start adventure
               </button>
             </>

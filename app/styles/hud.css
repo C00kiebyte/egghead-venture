@@ -1,0 +1,120 @@
+.hud {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+}
+.hud-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.3rem;
+  color: #fff3cf;
+  text-shadow: 0 2px 0 var(--wood-dark);
+}
+.hud-count {
+  font-size: 0.85rem;
+  color: #f6dca8;
+  white-space: nowrap;
+}
+@media (max-width: 560px) {
+  .hud-count {
+    display: none;
+  }
+}
+
+.short {
+  display: none;
+}
+
+.path {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  padding: 3px 10px;
+  margin: 0;
+  background: rgba(251, 239, 201, 0.92);
+  border: 3px solid var(--wood-dark);
+  border-radius: 999px;
+}
+.step {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  background: #e9d9ab;
+  border: 2px solid var(--wood-1);
+  filter: grayscale(1) opacity(0.55);
+}
+.step.now {
+  filter: none;
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--gold);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+.step.done {
+  filter: none;
+  background: #8be07a;
+  font-size: 15px;
+  color: #175c1d;
+  font-weight: 700;
+}
+.step .sprite-emoji {
+  font-size: 17px;
+}
+.step .sprite-img {
+  font-size: 22px;
+}
+
+@media (max-width: 879px), (max-height: 599px) {
+  .hud {
+    gap: 8px;
+    padding: calc(6px + env(safe-area-inset-top)) 10px 6px;
+  }
+  .hud-title {
+    font-size: 1.05rem;
+  }
+  .hud-count {
+    display: none;
+  }
+  .path {
+    padding: 2px 6px;
+    gap: 4px;
+    border-width: 2px;
+  }
+  .step {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+  .long {
+    display: none;
+  }
+  .short {
+    display: inline;
+  }
+}
+
+@media (max-width: 480px) {
+  .hud {
+    justify-content: space-between;
+  }
+  .hud-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .path {
+    margin-right: auto;
+  }
+}
