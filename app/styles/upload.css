@@ -1,0 +1,157 @@
+.cover-lower {
+  align-items: start;
+}
+@media (min-width: 880px) {
+  .lower.cover-lower {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.upload-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.file-name {
+  color: #1d6b27;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.upload textarea {
+  width: 100%;
+  height: 230px;
+  resize: vertical;
+  padding: 10px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #2f1c08;
+  background: #fffaf0;
+  border: 3px solid var(--tile-edge);
+  border-radius: 10px;
+}
+.format-hint {
+  font-size: 0.88rem;
+  color: #6b4a22;
+}
+.preview {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+.chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chips li {
+  padding: 1px 12px;
+  font-size: 0.88rem;
+  background: var(--parch-2);
+  border: 2px solid var(--tile-edge);
+  border-radius: 999px;
+}
+.error {
+  color: #b3261e;
+  font-weight: 600;
+}
+
+.art-pick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.art-label {
+  font-family: var(--display);
+  font-size: 1.05rem;
+}
+.seg {
+  cursor: pointer;
+}
+.seg input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.seg span {
+  display: inline-block;
+  padding: 4px 14px;
+  min-height: 36px;
+  line-height: 28px;
+  font-family: var(--display);
+  background: var(--parch-2);
+  border: 3px solid var(--tile-edge);
+  border-radius: 999px;
+}
+.seg input:checked + span {
+  background: linear-gradient(#8cf07a, #2fa63a);
+  color: #fff;
+  border-color: #1d6b27;
+  text-shadow: 0 1px 0 #1d6b27;
+}
+.seg input:focus-visible + span {
+  outline: 3px solid #fff;
+  box-shadow: 0 0 0 6px var(--brown);
+}
+
+.startbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 12px 14px;
+  border-top: 4px solid var(--wood-dark);
+}
+.start-summary {
+  color: #fff3cf;
+  font-weight: 500;
+}
+.startbar .chips {
+  flex: 1;
+}
+.startbar .attack {
+  margin-left: auto;
+}
+.startbar .error {
+  color: #fff;
+  background: #b3261e;
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: 2px solid #7d1a14;
+}
+
+@media (max-width: 879px), (max-height: 599px) {
+  .upload textarea {
+    height: 190px;
+    font-size: 16px;
+  }
+  .startbar {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    flex-wrap: nowrap;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  }
+  .start-summary {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.9rem;
+  }
+  .startbar .chips,
+  .start-title,
+  .start-sep {
+    display: none;
+  }
+  .startbar .attack {
+    margin-left: 0;
+    flex: none;
+  }
+}

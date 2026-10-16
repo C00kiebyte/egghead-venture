@@ -15,7 +15,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="m-0 [-webkit-text-size-adjust:100%]">
+    <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Lilita+One&display=swap"
         />
       </head>
-      <body className="min-h-dvh bg-linear-to-b from-sky-1 via-sky-2 via-65% to-[#d8f5b0] ">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

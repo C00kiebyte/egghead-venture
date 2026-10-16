@@ -1,0 +1,19 @@
+:root {
+  --sky-1: #58bdf0;
+  --sky-2: #bfeaff;
+  --wood-1: #b06a2c;
+  --wood-2: #8a4f1e;
+  --wood-dark: #5e3210;
+  --wood-edge: #d9a15c;
+  --parch: #fbefc9;
+  --parch-2: #f1d9a0;
+  --brown: #4a2c0e;
+  --tile-1: #fff6d6;
+  --tile-2: #f3d98f;
+  --tile-edge: #9b6420;
+  --gold: #ffc935;
+  --red: #e8453c;
+  --display: "Lilita One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Fredoka", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}

@@ -33,6 +33,17 @@ export default function UploadPanel({ onStart, art, onArt }: Props) {
             </div>
           </div>
         </Scene>
+
+        <div className="lower wood cover-lower">
+          <section className="scroll">
+            <h2>How to play</h2>
+            <ol>
+              <li>Tap two or more terms that belong to one concept, like Stack, Queue and Array.</li>
+              <li>Every enemy is weak to one concept. Matching it deals double damage.</li>
+              <li>A wrong chain costs an action, then shows where each term belongs.</li>
+            </ol>
+          </section>
+        </div>
       </div>
     </main>
   );

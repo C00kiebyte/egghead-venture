@@ -1,0 +1,72 @@
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  min-height: 100vh;
+  background: linear-gradient(var(--sky-1), var(--sky-2) 65%, #d8f5b0);
+  color: var(--brown);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.45;
+}
+h1,
+h2,
+h3,
+p,
+ol,
+dl {
+  margin: 0;
+}
+code {
+  font-family: var(--mono);
+  font-size: 0.82em;
+  background: rgba(74, 44, 14, 0.12);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px var(--brown);
+}
+
+.wood {
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.07) 0 2px, transparent 2px 9px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 23px),
+    linear-gradient(var(--wood-1), var(--wood-2));
+}
+
+.tile,
+.btn,
+.round,
+.mini {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.tile {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+@media (max-width: 879px), (max-height: 599px) {
+  body {
+    overscroll-behavior: none;
+  }
+}

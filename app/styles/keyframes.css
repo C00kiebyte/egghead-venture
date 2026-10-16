@@ -1,0 +1,13 @@
+/* idle bobbing: fighters, cover parade */
+@keyframes bob {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* current-enemy marker, "new entry" dot */
+@keyframes pulse {
+  50% {
+    transform: scale(1.12);
+  }
+}
