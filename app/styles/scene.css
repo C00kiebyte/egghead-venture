@@ -92,7 +92,7 @@
   .scene {
     min-height: 0;
     border-block-width: 3px;
-    flex: none;
+    flex: 1;
   }
   .scene.tall {
     min-height: clamp(230px, 34dvh, 320px);
