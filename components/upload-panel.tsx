@@ -98,6 +98,32 @@ export default function UploadPanel({ onStart, art, onArt }: Props) {
             </div>
           </section>
         </div>
+
+        <div className="startbar wood">
+          {gameTerms.ok ? (
+            <>
+              <p className="start-summary" role="status">
+                <strong className="start-title">{gameTerms.module.title}</strong>
+                <span className="start-sep"> · </span>
+                {gameTerms.module.terms.length} terms · {gameTerms.module.topics.length} concepts
+              </p>
+
+              <ul className="chips">
+                {gameTerms.module.topics.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ul>
+
+              <button type="button" className="btn attack" onClick={() => {}}>
+                Start adventure
+              </button>
+            </>
+          ) : (
+            <p className="error" role="alert">
+              {gameTerms.error}
+            </p>
+          )}
+        </div>
       </div>
     </main>
   );
