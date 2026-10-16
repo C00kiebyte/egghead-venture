@@ -1,4 +1,15 @@
-import { ATTACK_EVERY, calcDamage, newGame, sharedTopics, submitChain, tileValue, toggleTile } from "@/lib/engine";
+import {
+  ATTACK_EVERY,
+  calcDamage,
+  clearSelection,
+  newGame,
+  sharedTopics,
+  shuffleBoard,
+  submitChain,
+  tileValue,
+  toggleTile,
+  undoLast,
+} from "@/lib/engine";
 import { ArtSet, GameState, Module, Tile } from "@/lib/types";
 import { useEffect, useRef, useState } from "react";
 import Sprite from "./sprite";
@@ -22,7 +33,13 @@ export default function Game({ mod, art, onExit }: Props) {
   const [shownIdx, setShownIdx] = useState(0);
   const [resultReady, setResultReady] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [seenTurn, setSeenTurn] = useState(0);
 
+  const sheetOpenRef = useRef(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const bookRef = useRef<HTMLButtonElement>(null);
+  const turnRef = useRef(0);
   const fightRef = useRef<HTMLDivElement>(null);
   const chipsRef = useRef<HTMLDivElement>(null);
   const busyRef = useRef(false);
@@ -32,6 +49,7 @@ export default function Game({ mod, art, onExit }: Props) {
   const swapping = shownIdx !== state.enemyIdx;
   const enemyShownHp = swapping ? 0 : state.enemyHp;
   const fxOnEnemy = shownIdx === targetIdx && state.turn > 0;
+  const unread = state.turn > seenTurn && state.feedback.kind !== "info";
 
   const showResult = state.phase !== "play" && resultReady;
   const attacked = state.event !== "none";
@@ -76,6 +94,37 @@ export default function Game({ mod, art, onExit }: Props) {
     setState(fn);
   }
   actRef.current = act;
+
+  useEffect(() => {
+    sheetOpenRef.current = sheetOpen;
+    if (!sheetOpen) return;
+    setSeenTurn(turnRef.current);
+    closeRef.current?.focus();
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSheetOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+      bookRef.current?.focus();
+    };
+  }, [sheetOpen]);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (sheetOpenRef.current) return;
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      // Enter on a focused button activates that button instead.
+      if (e.key === "Enter" && tag !== "BUTTON") actRef.current(submitChain);
+      else if (e.key === "Backspace") setState((p) => undoLast(p));
+      else if (e.key === "Escape") setState((p) => clearSelection(p));
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
     <main className="game">
@@ -260,6 +309,44 @@ export default function Game({ mod, art, onExit }: Props) {
                       </button>
                     );
                   })}
+                </div>
+                <div className="toolbar">
+                  <button
+                    type="button"
+                    className="btn small"
+                    disabled={!state.selected.length}
+                    onClick={() => setState(undoLast)}
+                  >
+                    Undo
+                  </button>
+                  <button
+                    type="button"
+                    className="btn small"
+                    disabled={!state.selected.length}
+                    onClick={() => setState(clearSelection)}
+                  >
+                    Clear
+                  </button>
+                  <button
+                    type="button"
+                    className="btn small"
+                    disabled={busy || state.phase !== "play"}
+                    onClick={() => act(shuffleBoard)}
+                    aria-label="Shuffle board, uses one action"
+                  >
+                    Shuffle −1
+                  </button>
+                  <button
+                    type="button"
+                    ref={bookRef}
+                    className="btn small btn-book"
+                    aria-haspopup="dialog"
+                    aria-label={unread ? "Open spellbook, new entry" : "Open spellbook"}
+                    onClick={() => setSheetOpen(true)}
+                  >
+                    <span aria-hidden="true">📖 Book</span>
+                    {unread && <i className="dot" aria-hidden="true" />}
+                  </button>
                 </div>
               </>
             ) : (

@@ -187,3 +187,30 @@ export function tileValue(word: string): number {
   const len = word.replace(/\s/g, "").length;
   return len <= 4 ? 1 : len <= 7 ? 2 : len <= 10 ? 3 : 4;
 }
+
+export function undoLast(s: GameState): GameState {
+  return { ...s, selected: s.selected.slice(0, -1) };
+}
+
+export function clearSelection(s: GameState): GameState {
+  return { ...s, selected: [] };
+}
+
+export function shuffleBoard(s: GameState): GameState {
+  if (s.phase !== "play") return s;
+  const enemy = s.enemies[s.enemyIdx];
+  const base: GameState = {
+    ...s,
+    turn: s.turn + 1,
+    notice: "",
+    struck: false,
+    defeated: false,
+    selected: [],
+    event: "none",
+  };
+  return endAction({
+    ...base,
+    board: fillBoard(s.mod, Array(s.board.length).fill(null), enemy.weakness),
+    feedback: { kind: "info", text: "Fresh terms drawn. That used one action." },
+  });
+}

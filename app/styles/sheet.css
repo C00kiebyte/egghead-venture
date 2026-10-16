@@ -1,0 +1,88 @@
+.btn-book {
+  display: none;
+  position: relative;
+}
+.dot {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 2px solid #fff3cf;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.status-compact {
+  display: none;
+}
+
+.sheet-wrap {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+.sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  background: rgba(30, 15, 5, 0.55);
+  cursor: default;
+}
+.sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 75vh;
+  max-height: 75dvh;
+  overflow: auto;
+  overscroll-behavior: contain;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding: 14px 16px calc(18px + env(safe-area-inset-bottom)) 30px;
+  background: linear-gradient(90deg, #d4ae62 0 16px, var(--parch) 16px);
+  border: 4px solid var(--wood-dark);
+  border-bottom: 0;
+  border-radius: 18px 18px 0 0;
+  animation: sheetUp 0.25s ease-out;
+}
+.sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.sheet-head h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.35rem;
+}
+.sheet h3 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+@keyframes sheetUp {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@media (max-width: 879px), (max-height: 599px) {
+  .btn-book {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sheet-wrap {
+    display: block;
+  }
+  .status-compact {
+    display: block;
+  }
+}
