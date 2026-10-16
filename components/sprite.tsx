@@ -12,5 +12,20 @@ export default function Sprite({ art }: { art: SpriteArt }) {
     );
   }
 
-  return <></>;
+  const frames = art.frames ?? 1;
+  const style = {
+    "--frames": frames,
+    "--ratio": art.width / art.height,
+    "--fps": art.fps ?? 6,
+    fontSize: `${scale}em`,
+    backgroundImage: `url(${art.src})`,
+  } as React.CSSProperties;
+
+  return (
+    <span
+      className={`sprite-img ${frames > 1 ? "animated" : ""} ${art.flip ? "flip" : ""}`}
+      style={style}
+      aria-hidden="true"
+    />
+  );
 }

@@ -113,19 +113,19 @@
 @keyframes hitE {
   0%,
   100% {
-    transform: translate(0, 0) rotate(0) scale(1) scaleX(-1);
+    transform: translate(0, 0) rotate(0) scale(1);
     filter: none;
   }
   10% {
-    transform: translate(28px, 0) rotate(12deg) scale(1.1) scaleX(-1);
+    transform: translate(28px, 0) rotate(12deg) scale(1.1);
     filter: brightness(1.6) drop-shadow(0 0 14px #ffd84a);
   }
   30% {
-    transform: translate(-8px, 0) rotate(-4deg) scale(1) scaleX(-1);
+    transform: translate(-8px, 0) rotate(-4deg) scale(1);
     filter: brightness(1.2);
   }
   55% {
-    transform: translate(8px, 0) rotate(3deg) scale(1) scaleX(-1);
+    transform: translate(8px, 0) rotate(3deg) scale(1);
     filter: none;
   }
 }
