@@ -6,7 +6,9 @@
 @import "./styles/hud.css";
 @import "./styles/scene.css";
 @import "./styles/sprite.css";
+@import "./styles/fighters.css";
 @import "./styles/panel.css";
 @import "./styles/spellbook.css";
 @import "./styles/cover.css";
 @import "./styles/upload.css";
+@import "./styles/attack.css";

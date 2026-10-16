@@ -1,0 +1,287 @@
+.fight {
+  --hit-at: 0.26s;
+  --enemy-at: 0.95s;
+  --dash: 150px;
+}
+.fight.quick {
+  --enemy-at: 0.25s;
+}
+
+.mover {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  place-items: end center;
+}
+.mover.atk {
+  animation: dashR 0.75s linear;
+}
+.mover.atk-block {
+  animation: dashBlock 0.75s linear;
+}
+.mover.atk-e {
+  animation: dashL 0.75s linear var(--enemy-at);
+}
+
+/* Wind up, rush, squash on impact, then run back. */
+@keyframes dashR {
+  0% {
+    transform: translate(0, 0) scale(1, 1) rotate(0);
+    animation-timing-function: ease-out;
+  }
+  18% {
+    transform: translate(-18px, 0) scale(1.1, 0.9) rotate(-8deg);
+    animation-timing-function: cubic-bezier(0.7, 0, 1, 0.5);
+  }
+  34% {
+    transform: translate(var(--dash), 0) scale(0.9, 1.12) rotate(6deg);
+    animation-timing-function: linear;
+  }
+  46% {
+    transform: translate(var(--dash), 0) scale(1.15, 0.88) rotate(0);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    transform: translate(0, 0) scale(1, 1) rotate(0);
+  }
+}
+@keyframes dashL {
+  0% {
+    transform: translate(0, 0) scale(1, 1) rotate(0);
+    animation-timing-function: ease-out;
+  }
+  18% {
+    transform: translate(18px, 0) scale(1.1, 0.9) rotate(8deg);
+    animation-timing-function: cubic-bezier(0.7, 0, 1, 0.5);
+  }
+  34% {
+    transform: translate(calc(var(--dash) * -1), 0) scale(0.9, 1.12) rotate(-6deg);
+    animation-timing-function: linear;
+  }
+  46% {
+    transform: translate(calc(var(--dash) * -1), 0) scale(1.15, 0.88) rotate(0);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    transform: translate(0, 0) scale(1, 1) rotate(0);
+  }
+}
+/* A wrong chain: the dash bounces off a shield and tumbles back. */
+@keyframes dashBlock {
+  0% {
+    transform: translate(0, 0) scale(1, 1) rotate(0);
+    animation-timing-function: ease-out;
+  }
+  18% {
+    transform: translate(-18px, 0) scale(1.1, 0.9) rotate(-8deg);
+    animation-timing-function: cubic-bezier(0.7, 0, 1, 0.5);
+  }
+  34% {
+    transform: translate(calc(var(--dash) * 0.72), 0) scale(0.9, 1.12) rotate(6deg);
+    animation-timing-function: linear;
+  }
+  42% {
+    transform: translate(calc(var(--dash) * 0.72), 0) scale(1.18, 0.85) rotate(4deg);
+    animation-timing-function: ease-out;
+  }
+  62% {
+    transform: translate(calc(var(--dash) * 0.4), -22px) scale(1, 1) rotate(-16deg);
+    animation-timing-function: ease-in;
+  }
+  80% {
+    transform: translate(calc(var(--dash) * 0.1), 0) scale(1.05, 0.95) rotate(-4deg);
+    animation-timing-function: ease-out;
+  }
+  100% {
+    transform: translate(0, 0) scale(1, 1) rotate(0);
+  }
+}
+
+/* Reactions land on the beat of the impact. */
+.sprite.is-hit {
+  animation: hitE 0.55s var(--hit-at) ease-out backwards;
+}
+.sprite.is-struck {
+  animation: hitP 0.55s calc(var(--enemy-at) + var(--hit-at)) ease-out backwards;
+}
+.sprite.is-dead {
+  animation: defeat 1s var(--hit-at) ease-in forwards;
+}
+.sprite.hero.is-dead {
+  animation-delay: calc(var(--enemy-at) + var(--hit-at));
+}
+@keyframes hitE {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0) scale(1);
+    filter: none;
+  }
+  10% {
+    transform: translate(28px, 0) rotate(12deg) scale(1.1);
+    filter: brightness(1.6) drop-shadow(0 0 14px #ffd84a);
+  }
+  30% {
+    transform: translate(-8px, 0) rotate(-4deg) scale(1);
+    filter: brightness(1.2);
+  }
+  55% {
+    transform: translate(8px, 0) rotate(3deg) scale(1);
+    filter: none;
+  }
+}
+@keyframes hitP {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0) scale(1);
+    filter: none;
+  }
+  10% {
+    transform: translate(-28px, 0) rotate(-12deg) scale(1.1);
+    filter: brightness(1.5) drop-shadow(0 0 14px #ff5a4d);
+  }
+  30% {
+    transform: translate(8px, 0) rotate(4deg) scale(1);
+    filter: brightness(1.2);
+  }
+  55% {
+    transform: translate(-8px, 0) rotate(-3deg) scale(1);
+    filter: none;
+  }
+}
+@keyframes defeat {
+  0% {
+    transform: translate(0, 0) rotate(0) scale(1);
+    opacity: 1;
+    filter: none;
+  }
+  12% {
+    transform: translate(30px, 0) rotate(14deg) scale(1.1);
+    opacity: 1;
+    filter: brightness(1.7);
+  }
+  100% {
+    transform: translate(24px, 38px) rotate(95deg) scale(0.55);
+    opacity: 0;
+    filter: none;
+  }
+}
+
+/* A new enemy runs in from the right. */
+.enter {
+  display: grid;
+  place-items: end center;
+  animation: enemyIn 0.5s ease-out backwards;
+}
+@keyframes enemyIn {
+  from {
+    transform: translateX(70px);
+    opacity: 0;
+  }
+}
+
+/* Starburst at the point of impact and a quick screen flash. */
+.impact {
+  position: absolute;
+  left: 50%;
+  bottom: 34%;
+  z-index: 7;
+  width: 84px;
+  height: 84px;
+  translate: -50% 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle, #fff 0 22%, #ffe27a 23% 52%, #ff9d2e 53%);
+  clip-path: polygon(
+    50% 0%,
+    56.7% 24.9%,
+    75% 6.7%,
+    68.4% 31.6%,
+    93.3% 25%,
+    75.1% 43.3%,
+    100% 50%,
+    75.1% 56.7%,
+    93.3% 75%,
+    68.4% 68.4%,
+    75% 93.3%,
+    56.7% 75.1%,
+    50% 100%,
+    43.3% 75.1%,
+    25% 93.3%,
+    31.6% 68.4%,
+    6.7% 75%,
+    24.9% 56.7%,
+    0% 50%,
+    24.9% 43.3%,
+    6.7% 25%,
+    31.6% 31.6%,
+    25% 6.7%,
+    43.3% 24.9%
+  );
+  animation: burst 0.4s var(--hit-at) ease-out backwards;
+}
+.impact.big {
+  width: 124px;
+  height: 124px;
+}
+.impact.hurt {
+  background: radial-gradient(circle, #fff 0 22%, #ff8a7d 23% 52%, #d63a30 53%);
+  animation-delay: calc(var(--enemy-at) + var(--hit-at));
+}
+@keyframes burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(0);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(0.7) rotate(8deg);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1.15) rotate(20deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4) rotate(40deg);
+  }
+}
+.flash {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0;
+  background: #fff;
+  animation: flash 0.22s var(--hit-at) ease-out;
+}
+.flash.hurt {
+  background: #ff4d3d;
+  animation-delay: calc(var(--enemy-at) + var(--hit-at));
+}
+@keyframes flash {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Damage numbers pop on impact, not at the start of the dash. */
+.float {
+  z-index: 8;
+  animation-fill-mode: both;
+}
+.float-dmg,
+.float-miss {
+  animation-delay: var(--hit-at);
+}
+.float-heal {
+  animation-delay: calc(var(--hit-at) + 0.1s);
+}
+.float-hurt {
+  animation-delay: calc(var(--enemy-at) + var(--hit-at));
+}

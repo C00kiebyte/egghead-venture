@@ -3,8 +3,11 @@
   z-index: 1;
   font-size: clamp(64px, 14vw, 104px);
   line-height: 1;
+}
+.sprite.bob {
   animation: bob 2.4s ease-in-out infinite;
 }
+
 .side + .side :where(.sprite) {
   animation-delay: -1.1s;
 }
