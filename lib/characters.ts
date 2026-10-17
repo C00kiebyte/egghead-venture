@@ -23,7 +23,7 @@ const PIXEL_SET: ArtSet = {
   },
   enemies: [
     {
-      name: "Ogre",
+      name: "Gluttonous Ogre",
       art: {
         kind: "image",
         src: "/sprites/ogre.png",
@@ -36,7 +36,7 @@ const PIXEL_SET: ArtSet = {
       },
     },
     {
-      name: "Ghost",
+      name: "Ghost of Envy",
       art: {
         kind: "image",
         src: "/sprites/ghost.png",
@@ -49,12 +49,43 @@ const PIXEL_SET: ArtSet = {
       },
     },
     {
-      name: "Slime",
-      art: { kind: "image", src: "/sprites/slime.png", width: 24, height: 24, frames: 2, fps: 3 },
+      name: "Sea Warden",
+      art: {
+        kind: "image",
+        src: "/sprites/sea-warden.png",
+        width: 22,
+        height: 25,
+        frames: 3,
+        fps: 5,
+        scale: 1.2,
+        flip: true,
+      },
     },
     {
-      name: "Bettle",
-      art: { kind: "image", src: "/sprites/beetle.png", width: 24, height: 24, frames: 2, fps: 4 },
+      name: "Bandit Brothers",
+      art: {
+        kind: "image",
+        src: "/sprites/bandit-brothers.png",
+        width: 12,
+        height: 28,
+        frames: 3,
+        fps: 5,
+        scale: 1.2,
+        flip: true,
+      },
+    },
+    {
+      name: "Soul Guardian",
+      art: {
+        kind: "image",
+        src: "/sprites/golem.png",
+        width: 25,
+        height: 26,
+        frames: 3,
+        fps: 5,
+        scale: 1.2,
+        flip: true,
+      },
     },
   ],
 };

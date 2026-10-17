@@ -245,6 +245,10 @@ export default function Game({ mod, art, onExit }: Props) {
 
             {/* PLAYER */}
             <div className="side">
+              <div className="plaque">
+                <h2>You</h2>
+                <Meter value={playerHpShown} max={state.playerMaxHp} tone="good" label="Your health" />
+              </div>
               <div className="actor">
                 <div
                   key={`pm${state.turn}`}
@@ -272,14 +276,29 @@ export default function Game({ mod, art, onExit }: Props) {
                   </span>
                 )}
               </div>
-              <div className="plaque">
-                <h2>You</h2>
-                <Meter value={playerHpShown} max={state.playerMaxHp} tone="good" label="Your health" />
-              </div>
             </div>
 
             {/* ENEMY */}
             <div className="side">
+              <div className="plaque">
+                <h2>{shownEnemy.name}</h2>
+                <Meter value={enemyHpShown} max={shownEnemy.maxHp} tone="bad" label={`${shownEnemy.name} health`} />
+                <p className="flag">Weak to {shownEnemy.weakness}</p>
+                {enemyDefeatedUi ? (
+                  <p className="strike">Defeated!</p>
+                ) : (
+                  <p className="strike" aria-label={`Strikes in ${state.charge} actions for ${shownEnemy.damage}`}>
+                    {Array.from({ length: ATTACK_EVERY }).map((_, i) => (
+                      <span key={i} className={`pip${i < ATTACK_EVERY - state.charge ? " on" : ""}`} aria-hidden="true">
+                        ⚔️
+                      </span>
+                    ))}
+                    <span>
+                      Strikes in {state.charge} for {shownEnemy.damage}
+                    </span>
+                  </p>
+                )}
+              </div>
               <div className="actor">
                 <div className="enter" key={`en ${shownIdx}`}>
                   <div key={`em ${state.turn}`} className={`mover ${enemyActs ? "atk-e" : ""}`}>
@@ -302,25 +321,6 @@ export default function Game({ mod, art, onExit }: Props) {
                   <span key={`m${state.turn}`} className="float float-miss">
                     Blocked!
                   </span>
-                )}
-              </div>
-              <div className="plaque">
-                <h2>{shownEnemy.name}</h2>
-                <Meter value={enemyHpShown} max={shownEnemy.maxHp} tone="bad" label={`${shownEnemy.name} health`} />
-                <p className="flag">Weak to {shownEnemy.weakness}</p>
-                {enemyDefeatedUi ? (
-                  <p className="strike">Defeated!</p>
-                ) : (
-                  <p className="strike" aria-label={`Strikes in ${state.charge} actions for ${shownEnemy.damage}`}>
-                    {Array.from({ length: ATTACK_EVERY }).map((_, i) => (
-                      <span key={i} className={`pip${i < ATTACK_EVERY - state.charge ? " on" : ""}`} aria-hidden="true">
-                        ⚔️
-                      </span>
-                    ))}
-                    <span>
-                      Strikes in {state.charge} for {shownEnemy.damage}
-                    </span>
-                  </p>
                 )}
               </div>
             </div>
@@ -379,7 +379,7 @@ export default function Game({ mod, art, onExit }: Props) {
                       <button
                         key={t.id}
                         type="button"
-                        className={`tile${on ? " on" : ""}`}
+                        className={`tile ${on ? "on" : ""}`}
                         style={{ "--i": i, "--fs": tileFont(t.term.word) } as React.CSSProperties}
                         aria-pressed={on}
                         onClick={(e) => pick(t.id, e)}

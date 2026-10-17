@@ -29,8 +29,7 @@
   padding-bottom: 14px;
 }
 .shadow {
-  position: absolute;
-  bottom: 5px;
+  margin-top: -8px;
   width: 96px;
   height: 16px;
   border-radius: 50%;
