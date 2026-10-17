@@ -8,20 +8,20 @@ import Sprite from "./sprite";
 interface Props {
   onStart: (m: Module) => void;
   art: ArtSet;
-  onArt: (id: string) => void;
+  modName: string;
+  setModName: (val: string) => void;
 }
 
-export default function UploadPanel({ onStart, art, onArt }: Props) {
-  const [selectedModule, setSelectedModule] = useState("computer science");
+export default function UploadPanel({ onStart, art, modName, setModName }: Props) {
   const [moduleContent, setModuleContent] = useState(SAMPLE_CS);
   const gameTerms = useMemo(() => parseModule(moduleContent), [moduleContent]);
 
   const onModuleSelect = (val: string) => {
-    setSelectedModule(val);
+    setModName(val);
   };
 
   useEffect(() => {
-    switch (selectedModule) {
+    switch (modName) {
       case "application development":
         setModuleContent(SAMPLE_APP_DEV);
         break;
@@ -34,7 +34,7 @@ export default function UploadPanel({ onStart, art, onArt }: Props) {
       default:
         setModuleContent(SAMPLE_CS);
     }
-  }, [selectedModule]);
+  }, [modName]);
 
   return (
     <main className="game">
@@ -71,27 +71,24 @@ export default function UploadPanel({ onStart, art, onArt }: Props) {
             <textarea id="module-text" value={moduleContent} spellCheck={false} readOnly />
             <div className="modules">
               <button
-                className={selectedModule === "computer science" ? "selected" : ""}
+                className={modName === "computer science" ? "selected" : ""}
                 onClick={() => onModuleSelect("computer science")}
               >
                 Computer Science Basics
               </button>
               <button
-                className={selectedModule === "application development" ? "selected" : ""}
+                className={modName === "application development" ? "selected" : ""}
                 onClick={() => onModuleSelect("application development")}
               >
                 Application Development
               </button>
               <button
-                className={selectedModule === "cybersecurity" ? "selected" : ""}
+                className={modName === "cybersecurity" ? "selected" : ""}
                 onClick={() => onModuleSelect("cybersecurity")}
               >
                 Cybersecurity
               </button>
-              <button
-                className={selectedModule === "automata" ? "selected" : ""}
-                onClick={() => onModuleSelect("automata")}
-              >
+              <button className={modName === "automata" ? "selected" : ""} onClick={() => onModuleSelect("automata")}>
                 Theory of Computations with Automata
               </button>
             </div>
