@@ -15,7 +15,6 @@
   color: #ffd84a;
   -webkit-text-stroke: 10px #6b3410;
   paint-order: stroke fill;
-  text-shadow: 0 8px 0 #6b3410;
   transform: rotate(-2deg);
 }
 .tagline {

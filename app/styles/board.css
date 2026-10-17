@@ -122,6 +122,11 @@
     top: -6px;
     left: -6px;
   }
+  .dmg {
+    top: 0px;
+    right: 0px;
+    scale: 0.7;
+  }
 }
 
 @media (max-width: 380px) {
